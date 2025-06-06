@@ -22,6 +22,7 @@ def main():
                 screen.fill("black") #fills the screen with black color
                 player.draw(screen) #the player has to pop up after the screen pops up but before the frame is refreshed
                 player.update(dt)  # Update the player object with the current delta time
+                player.move(dt)  # Move the player object with the current delta time
                 dt = pygame.time.Clock().tick(60)/1000 # .tick() returns the number of milliseconds since the last call, so we divide by 1000 to get seconds, meaning the time for 1/60th of a second, or a frame
                 pygame.display.flip()  # Update the full display Surface to the screen --> must be called last in the loop
                 
