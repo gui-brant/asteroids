@@ -7,11 +7,11 @@ from constants import *
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
-
+from shot import Shot
 def main():
         print("Starting Asteroids!")
-        print(f"Screen width: {SCREEN_WIDTH}")
-        print(f"Screen height: {SCREEN_HEIGHT}")  
+        #print(f"Screen width: {SCREEN_WIDTH}")
+        #print(f"Screen height: {SCREEN_HEIGHT}")  
         pygame.init() # Initialize all imported pygame modules
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Create a GUI window with the specified dimensions
         clock = pygame.time.Clock()  # Create a clock object to control the frame rate
@@ -25,6 +25,11 @@ def main():
         asteroids = pygame.sprite.Group() #creates the a group for the asteroid objects
         Asteroid.containers = (asteroids, updatables, drawables) #this adds Asteroid objects as part of updatables, drawables, and asteroids. So whenever updatables is called in main(), the AsteroidField sprite will also be called with Asteroid and Player objects
 
+        #This pertains to shots stuff:
+        shots = pygame.sprite.Group()
+        Shot.containers = (shots, updatables, drawables)
+
+        #This pertains to AsteroidField stuff:
         AsteroidField.containers = updatables #This adds AsteroidField objects as part of updatables. So whenever updatables is called in main(), the AsteroidField sprite will also be called with Asteroid and Player objects
         asteroid_field = AsteroidField()
         # Main game loop
@@ -33,15 +38,18 @@ def main():
                         if event.type == pygame.QUIT:
                                 return 
                 screen.fill("black") #fills the screen with black color
-
                 updatables.update(dt)
                 for asteroid in asteroids:
-                       if asteroid.collision(player) == True:
+                        if asteroid.collision(player) == True:
                               print("Game over!")
                               sys.exit()
+                        for shot in shots:
+                              if asteroid.collision(shot) == True:
+                                     asteroid.kill()
+                                     shot.kill()
+                              
                 for drawable in drawables:
                        drawable.draw(screen)     
-                
                 dt = clock.tick(60)/1000 # .tick() returns the number of milliseconds since the last call, so we divide by 1000 to get seconds, meaning the time for 1/60th of a second, or a frame
                 pygame.display.flip()  # Update the full display Surface to the screen --> must be called last in the loop
                 
